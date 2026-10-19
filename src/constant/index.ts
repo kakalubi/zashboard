@@ -4,6 +4,7 @@ import {
   CubeTransparentIcon,
   DocumentTextIcon,
   GlobeAltIcon,
+  RectangleGroupIcon,
   Squares2X2Icon,
   SwatchIcon,
 } from '@heroicons/vue/24/outline'
@@ -245,6 +246,7 @@ export enum TUN_STACK {
 
 export enum ROUTE_NAME {
   overview = 'overview',
+  myProxies = 'myProxies',
   proxies = 'proxies',
   connections = 'connections',
   logs = 'logs',
@@ -255,6 +257,7 @@ export enum ROUTE_NAME {
 
 export const ROUTE_ICON_MAP = {
   [ROUTE_NAME.overview]: Squares2X2Icon,
+  [ROUTE_NAME.myProxies]: RectangleGroupIcon,
   [ROUTE_NAME.proxies]: GlobeAltIcon,
   [ROUTE_NAME.connections]: ArrowsRightLeftIcon,
   [ROUTE_NAME.rules]: SwatchIcon,

@@ -8,17 +8,13 @@
       <div
         v-for="node in nodesLatency"
         :key="node.name"
-        class="flex size-3 items-center justify-center rounded-sm transition hover:scale-110"
-        :class="getBgColor(node.latency)"
+        class="size-3 cursor-pointer rounded-sm transition hover:scale-110"
+        :class="getDotClass(node)"
+        :style="getDotStyle(node)"
         ref="dotsRef"
         @mouseenter="(e) => makeTippy(e, node)"
         @click.stop="$emit('nodeclick', node.name)"
-      >
-        <div
-          class="size-[5px] rounded-[2px] bg-white"
-          v-if="now === node.name"
-        ></div>
-      </div>
+      />
     </template>
     <div
       v-else
@@ -121,6 +117,34 @@ const nodesLatency = computed(() => {
 
   return props.nodes.map((name, index) => ({ name, latency: latencyList.value[index] }))
 })
+const getDotClass = (node: { name: string; latency: number }) => {
+  const isCurrent = props.now === node.name
+  const isAvailable = node.latency !== NOT_CONNECTED
+
+  if (isCurrent) {
+    return isAvailable ? 'bg-low-latency active-dot-green' : 'active-dot-red'
+  }
+
+  return isAvailable ? '' : 'bg-base-content/60'
+}
+
+const getDotStyle = (node: { name: string; latency: number }) => {
+  const isCurrent = props.now === node.name
+  const isAvailable = node.latency !== NOT_CONNECTED
+
+  // 当前使用中且不可用：正红色，饱满醒目
+  if (isCurrent && !isAvailable) {
+    return { backgroundColor: '#FF0000' }
+  }
+
+  // 可用节点：淡雅天蓝色 #ACD6FF
+  if (!isCurrent && isAvailable) {
+    return { backgroundColor: '#ACD6FF' }
+  }
+
+  return {}
+}
+
 const getBgColor = (latency: number) => {
   if (latency === NOT_CONNECTED) {
     return 'bg-base-content/60'
@@ -156,5 +180,69 @@ const latencyCounts = computed(() => {
 .tooltip:before {
   left: 0;
   transform: translateX(-10px);
+}
+
+/* 激活且可用的绿色节点：雷达呼吸微光光晕 (加速2x) */
+.active-dot-green {
+  position: relative;
+  z-index: 2;
+  animation: radarGreen 1.1s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes radarGreen {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(34, 197, 94, 0.85),
+      0 0 6px rgba(34, 197, 94, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(34, 197, 94, 0),
+      0 0 10px rgba(34, 197, 94, 0.2);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(34, 197, 94, 0),
+      0 0 0 rgba(34, 197, 94, 0);
+    transform: scale(1);
+  }
+}
+
+/* 激活但不可用的红色节点：急促告警心跳光晕 (加速2x) */
+.active-dot-red {
+  position: relative;
+  z-index: 2;
+  animation: alertRed 0.6s infinite ease-out;
+}
+
+@keyframes alertRed {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(255, 0, 0, 0.9),
+      0 0 8px rgba(255, 0, 0, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(255, 0, 0, 0),
+      0 0 12px rgba(255, 0, 0, 0.3);
+    transform: scale(1.15);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 0, 0, 0),
+      0 0 0 rgba(255, 0, 0, 0);
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .active-dot-green,
+  .active-dot-red {
+    animation: none;
+    transform: scale(1.1);
+  }
 }
 </style>

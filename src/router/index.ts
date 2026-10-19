@@ -6,6 +6,7 @@ import { activeBackend } from '@/store/setup'
 import ConnectionsPage from '@/views/ConnectionsPage.vue'
 import HomePage from '@/views/HomePage.vue'
 import LogsPage from '@/views/LogsPage.vue'
+import MyProxiesPage from '@/views/MyProxiesPage.vue'
 import OverviewPage from '@/views/OverviewPage.vue'
 import ProxiesPage from '@/views/ProxiesPage.vue'
 import RulesPage from '@/views/RulesPage.vue'
@@ -16,6 +17,11 @@ import { watch } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const childrenRouter = [
+  {
+    path: 'my-proxies',
+    name: ROUTE_NAME.myProxies,
+    component: MyProxiesPage,
+  },
   {
     path: 'proxies',
     name: ROUTE_NAME.proxies,
